@@ -1,7 +1,6 @@
 import argparse
-
-from exploits import exploitshell
-from exploits import exploitsql
+from exploits.exploitsql import ExploitSql
+from exploits.exploitshell import ExploitShell
 
 parser = argparse.ArgumentParser()
 parser.add_argument('hostname', help='URL')
@@ -12,6 +11,6 @@ if args.hostname and args.category:
 	hostname = args.hostname
 	category = args.category
 	if category == 'sql':
-		exploitsql.ExploitSql(hostname)
+		[cls.exploit(hostname) for cls in vars()['ExploitSql'].__subclasses__()]
 	if category == 'shell':
-		exploitshell.ExploitShell(hostname)
+		[cls.exploit(hostname) for cls in vars()['ExploitShell'].__subclasses__()]
