@@ -1,6 +1,7 @@
 import argparse
-from exploits import exploitsql
+
 from exploits import exploitshell
+from exploits import exploitsql
 
 parser = argparse.ArgumentParser()
 parser.add_argument('hostname', help='URL')
