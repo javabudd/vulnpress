@@ -13,6 +13,6 @@ if args.hostname and args.category:
 	hostname = args.hostname
 	category = args.category
 	if category == 'sql':
-		[cls.exploit(hostname) for cls in vars()['ExploitSql'].__subclasses__()]
+		[cls(hostname).exploit() for cls in vars()['ExploitSql'].__subclasses__()]
 	if category == 'shell':
-		[cls.exploit(hostname) for cls in vars()['ExploitShell'].__subclasses__()]
+		[cls(hostname).exploit() for cls in vars()['ExploitShell'].__subclasses__()]
