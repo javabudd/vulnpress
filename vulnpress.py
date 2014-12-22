@@ -9,12 +9,19 @@ from exploits.xss import *
 parser = argparse.ArgumentParser()
 parser.add_argument('hostname', help='URL')
 parser.add_argument('category', help='sql, shell, xss')
+parser.add_argument('-s', action='store_true', help='HTTPS')
 args = parser.parse_args()
 
-if args.hostname and args.category:
+hostname = args.hostname
+category = args.category
+
+if args.s and hostname and category:
+	print('HTTPS not currently supported')
+
+elif hostname and category:
+	if hostname[:7] != "http://":
+			hostname = 'http://' + hostname
 	print('\r\n')
-	hostname = args.hostname
-	category = args.category
 	if category == 'sql':
 		[cls(hostname).exploit() for cls in vars()['ExploitSql'].__subclasses__()]
 	if category == 'shell':
