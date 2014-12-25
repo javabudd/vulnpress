@@ -40,6 +40,7 @@ class Vulnpress():
 		self.exploitcategory(self.category, login=login, https=https)
 
 	def exploitcategory(self, category, login=False, https=False):
+		print('\n')
 		if not https:
 			self.formathostname()
 		else:
@@ -56,9 +57,9 @@ class Vulnpress():
 
 	def formathostname(self, https=False):
 		if self.hostname[:7] != "http://":
-					self.hostname = 'http://' + self.hostname
+			self.hostname = 'http://' + self.hostname
 		if https:
 			if self.hostname[:7] != "https://":
-					self.hostname = 'https://' + self.hostname
+				self.hostname = 'https://' + self.hostname
 
 Vulnpress(args.hostname, args.category, args.u, args.p)
