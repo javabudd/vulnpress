@@ -63,6 +63,6 @@ class Vulnpress():
 		if self.hostname[:8] == 'https://':
 			return
 		if self.hostname[:7] != "http://":
-					self.hostname = 'http://' + self.hostname
+			self.hostname = 'http://' + self.hostname
 
 Vulnpress(args.hostname, args.category, args.username, args.password)
