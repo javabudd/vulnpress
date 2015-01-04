@@ -1,6 +1,6 @@
 import argparse
 from colorama import Fore, Style, init
-from exploits.base import Base
+from exploits.exploit import Exploit
 from exploits.exploitsql import ExploitSql
 from exploits.exploitshell import ExploitShell
 from exploits.exploitxss import ExploitXSS
@@ -13,10 +13,9 @@ parser = argparse.ArgumentParser()
 scangroup = parser.add_argument_group('Scan', 'Scan arguments')
 logingroup = parser.add_argument_group('Login', 'Wordpress login options')
 scangroup.add_argument('hostname', help='server hostname')
-scangroup.add_argument('category', help='sql, shell, xss', choices=['sql', 'shell', 'xss'])
-scangroup.add_argument('--secure', action='store_true', help='HTTPS')
-logingroup.add_argument('-u', help='Optional Wordpress username')
-logingroup.add_argument('-p', help='Optional Wordpress password')
+scangroup.add_argument('category', help='all, sql, shell, xss', choices=['all', 'sql', 'shell', 'xss'])
+logingroup.add_argument('--username', help='Optional Wordpress username')
+logingroup.add_argument('--password', help='Optional Wordpress password')
 
 args = parser.parse_args()
 
@@ -31,34 +30,39 @@ class Vulnpress():
 
 	def init(self):
 		login = False
-		https = False
 		if self.username and self.password:
 			login = True
-		if args.secure:
-			# https = True
-			print(Fore.RED + '\nHTTPS not currently supported' + Style.RESET_ALL)
-		self.exploitcategory(self.category, login=login, https=https)
+		self.formathostname()
+		self.exploitcategory(self.category, login=login)
 
-	def exploitcategory(self, category, login=False, https=False):
-		if not https:
-			self.formathostname()
-		else:
-			self.formathostname(True)
+	def exploitcategory(self, category, login=False):
 		loggedin = False
 		if login:
-			loggedin = Base().login(self.hostname, self.username, self.password)
+			loggedin = Exploit().login(self.hostname, self.username, self.password)
+			if loggedin is False or loggedin is None:
+				exit("\n" + Fore.RED + 'Unable to login with those credentials' + Style.RESET_ALL)
+		if category == 'all':
+			print("\n" + Fore.GREEN + 'Running all exploits...' + Style.RESET_ALL + "\n")
+			print("\n" + Fore.GREEN + 'SQL...' + Style.RESET_ALL + "\n")
+			[cls(self.hostname, loggedin).exploit() for cls in ExploitSql.__subclasses__()]
+			print("\n" + Fore.GREEN + 'XSS...' + Style.RESET_ALL + "\n")
+			[cls(self.hostname, loggedin).exploit() for cls in ExploitXSS.__subclasses__()]
+			print("\n" + Fore.GREEN + 'Shell upload...' + Style.RESET_ALL + "\n")
+			[cls(self.hostname, loggedin).exploit() for cls in ExploitShell.__subclasses__()]
 		if category == 'sql':
+			print("\n" + Fore.GREEN + 'Running all SQL exploits...' + Style.RESET_ALL + "\n")
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitSql.__subclasses__()]
 		if category == 'xss':
+			print("\n" + Fore.GREEN + 'Running all XSS exploits...' + Style.RESET_ALL + "\n")
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitXSS.__subclasses__()]
 		if category == 'shell':
+			print("\n" + Fore.GREEN + 'Running all shell upload exploits...' + Style.RESET_ALL + "\n")
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitShell.__subclasses__()]
 
-	def formathostname(self, https=False):
+	def formathostname(self):
+		if self.hostname[:8] == 'https://':
+			return
 		if self.hostname[:7] != "http://":
 					self.hostname = 'http://' + self.hostname
-		if https:
-			if self.hostname[:7] != "https://":
-					self.hostname = 'https://' + self.hostname
 
-Vulnpress(args.hostname, args.category, args.u, args.p)
+Vulnpress(args.hostname, args.category, args.username, args.password)
