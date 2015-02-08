@@ -4,9 +4,11 @@ from exploits.exploit import Exploit
 from exploits.exploitsql import ExploitSql
 from exploits.exploitshell import ExploitShell
 from exploits.exploitxss import ExploitXSS
+from exploits.exploitescalation import ExploitEscalation
 from exploits.sql import *
 from exploits.shell import *
 from exploits.xss import *
+from exploits.escalation import *
 
 init()
 parser = argparse.ArgumentParser()
@@ -49,15 +51,19 @@ class Vulnpress():
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitXSS.__subclasses__()]
 			print("\n" + Fore.GREEN + 'Shell upload...' + Style.RESET_ALL + "\n")
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitShell.__subclasses__()]
-		if category == 'sql':
+			print("\n" + Fore.GREEN + 'Privilege escalation...' + Style.RESET_ALL + "\n")
+		elif category == 'sql':
 			print("\n" + Fore.GREEN + 'Running all SQL exploits...' + Style.RESET_ALL + "\n")
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitSql.__subclasses__()]
-		if category == 'xss':
+		elif category == 'xss':
 			print("\n" + Fore.GREEN + 'Running all XSS exploits...' + Style.RESET_ALL + "\n")
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitXSS.__subclasses__()]
-		if category == 'shell':
+		elif category == 'shell':
 			print("\n" + Fore.GREEN + 'Running all shell upload exploits...' + Style.RESET_ALL + "\n")
 			[cls(self.hostname, loggedin).exploit() for cls in ExploitShell.__subclasses__()]
+		elif category == 'escalation':
+			print("\n" + Fore.GREEN + 'Running all privilege escalation exploits...' + Style.RESET_ALL + "\n")
+			[cls(self.hostname, loggedin).exploit() for cls in ExploitEscalation.__subclasses__()]
 
 	def formathostname(self):
 		if self.hostname[:8] == 'https://':
