@@ -5,17 +5,19 @@ from exploits.exploitsql import ExploitSql
 from exploits.exploitshell import ExploitShell
 from exploits.exploitxss import ExploitXSS
 from exploits.exploitescalation import ExploitEscalation
+from exploits.exploitafd import ExploitAfd
 from exploits.sql import *
 from exploits.shell import *
 from exploits.xss import *
 from exploits.escalation import *
+from exploits.afd import *
 
 init()
 parser = argparse.ArgumentParser()
 scangroup = parser.add_argument_group('Scan', 'Scan arguments')
 logingroup = parser.add_argument_group('Login', 'Wordpress login options')
 scangroup.add_argument('hostname', help='server hostname')
-scangroup.add_argument('category', help='all, sql, shell, xss', choices=['all', 'escalation', 'shell', 'sql', 'xss'])
+scangroup.add_argument('category', help='afd(arbitrary file download), escalation(privilege escalation), shell(shell upload), sql(sql injection), xss(cross site scripting)', choices=['all', 'afd', 'escalation', 'shell', 'sql', 'xss'])
 logingroup.add_argument('--username', help='Optional Wordpress username')
 logingroup.add_argument('--password', help='Optional Wordpress password')
 
@@ -47,37 +49,39 @@ class Vulnpress():
 			return 'http://' + hostname
 
 	def exploitall(self):
-		print("\n" + Fore.GREEN + 'Running all exploits...' + Style.RESET_ALL + "\n")
-		print("\n" + Fore.GREEN + 'SQL...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitSql.__subclasses__()]
-		print("\n" + Fore.GREEN + 'XSS...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitXSS.__subclasses__()]
-		print("\n" + Fore.GREEN + 'Shell upload...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitShell.__subclasses__()]
-		print("\n" + Fore.GREEN + 'Privilege escalation...' + Style.RESET_ALL + "\n")
+		self.exploitsql()
+		self.exploitshell()
+		self.exploitescalation()
+		self.exploitxss()
+		self.exploitafd()
 
 	def exploitsql(self):
-		print("\n" + Fore.GREEN + 'Running SQL exploits...' + Style.RESET_ALL + "\n")
+		print("\n" + Fore.CYAN + 'Running SQL exploits...' + Style.RESET_ALL + "\n")
 		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitSql.__subclasses__()]
 
 	def exploitxss(self):
-		print("\n" + Fore.GREEN + 'Running XSS exploits...' + Style.RESET_ALL + "\n")
+		print("\n" + Fore.CYAN + 'Running XSS exploits...' + Style.RESET_ALL + "\n")
 		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitXSS.__subclasses__()]
 
 	def exploitescalation(self):
-		print("\n" + Fore.GREEN + 'Running privilege escalation exploits...' + Style.RESET_ALL + "\n")
+		print("\n" + Fore.CYAN + 'Running privilege escalation exploits...' + Style.RESET_ALL + "\n")
 		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitEscalation.__subclasses__()]
 
 	def exploitshell(self):
-		print("\n" + Fore.GREEN + 'Running shell upload exploits...' + Style.RESET_ALL + "\n")
+		print("\n" + Fore.CYAN + 'Running shell upload exploits...' + Style.RESET_ALL + "\n")
 		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitShell.__subclasses__()]
+
+	def exploitafd(self):
+		print("\n" + Fore.CYAN + 'Running arbitrary file download exploits...' + Style.RESET_ALL + "\n")
+		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitAfd.__subclasses__()]
 
 	EXPLOITS = {
 		'all': exploitall,
 		'sql': exploitsql,
 		'xss': exploitxss,
 		'escalation': exploitescalation,
-		'shell': exploitshell
+		'shell': exploitshell,
+		'afd': exploitafd
 	}
 
 Vulnpress(args.hostname, args.category, args.username, args.password)
