@@ -1,5 +1,5 @@
-import argparse
-from colorama import Fore, Style, init
+import tornado.ioloop
+import tornado.web
 from exploits.exploit import Exploit
 from exploits.exploitsql import ExploitSql
 from exploits.exploitshell import ExploitShell
@@ -12,41 +12,32 @@ from exploits.xss import *
 from exploits.escalation import *
 from exploits.afd import *
 
-init()
-parser = argparse.ArgumentParser()
-scangroup = parser.add_argument_group('Scan', 'Scan arguments')
-logingroup = parser.add_argument_group('Login', 'Wordpress login options')
-scangroup.add_argument('hostname', help='server hostname')
-scangroup.add_argument('category', help='afd(arbitrary file download), escalation(privilege escalation), shell(shell upload), sql(sql injection), xss(cross site scripting)', choices=['all', 'afd', 'escalation', 'shell', 'sql', 'xss'])
-logingroup.add_argument('--username', help='Optional Wordpress username')
-logingroup.add_argument('--password', help='Optional Wordpress password')
 
-args = parser.parse_args()
-
-
-class Vulnpress():
-	def __init__(self, hostname, category, username, password):
-		self.hostname = self.formathostname(hostname)
-		self.loggedin = self.login(username, password)
-		self.exploit(category)
+class Vulnpress:
+	def __init__(self, hostname, username=None, password=None):
+		self.hostname = hostname
+		self.formathostname()
+		self.isloggedin = self.login(username, password)
 
 	def exploit(self, category):
 		self.EXPLOITS.get(category)(self)
 
-	def login(self, username, password):
-		loggedin = False
-		if username and password:
-			loggedin = Exploit().login(self.hostname, username, password)
-			if loggedin is False or loggedin is None:
-				exit("\n" + Fore.RED + 'Unable to login with those credentials' + Style.RESET_ALL)
-		return loggedin
+		return Exploit.exploits
 
-	@staticmethod
-	def formathostname(hostname):
-		if hostname[:8] == 'https://':
-			return
-		if hostname[:7] != "http://":
-			return 'http://' + hostname
+	def login(self, username, password):
+		isloggedin = False
+		if username is not None and password is not None:
+			isloggedin = Exploit().login(self.hostname, username, password)
+			if isloggedin is False or isloggedin is None:
+				exit("\n"'Unable to login with those credentials')
+		return isloggedin
+
+	def formathostname(self):
+		if self.hostname[:8] == 'https://':
+			# ssl not supported yet
+			return False
+		if self.hostname[:7] != "http://":
+			self.hostname = 'http://' + self.hostname
 
 	def exploitall(self):
 		self.exploitsql()
@@ -56,24 +47,19 @@ class Vulnpress():
 		self.exploitafd()
 
 	def exploitsql(self):
-		print("\n" + Fore.CYAN + 'Running SQL exploits...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitSql.__subclasses__()]
+		[cls(self.hostname, self.isloggedin).exploit() for cls in ExploitSql.__subclasses__()]
 
 	def exploitxss(self):
-		print("\n" + Fore.CYAN + 'Running XSS exploits...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitXSS.__subclasses__()]
+		[cls(self.hostname, self.isloggedin).exploit() for cls in ExploitXSS.__subclasses__()]
 
 	def exploitescalation(self):
-		print("\n" + Fore.CYAN + 'Running privilege escalation exploits...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitEscalation.__subclasses__()]
+		[cls(self.hostname, self.isloggedin).exploit() for cls in ExploitEscalation.__subclasses__()]
 
 	def exploitshell(self):
-		print("\n" + Fore.CYAN + 'Running shell upload exploits...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitShell.__subclasses__()]
+		[cls(self.hostname, self.isloggedin).exploit() for cls in ExploitShell.__subclasses__()]
 
 	def exploitafd(self):
-		print("\n" + Fore.CYAN + 'Running arbitrary file download exploits...' + Style.RESET_ALL + "\n")
-		[cls(self.hostname, self.loggedin).exploit() for cls in ExploitAfd.__subclasses__()]
+		[cls(self.hostname, self.isloggedin).exploit() for cls in ExploitAfd.__subclasses__()]
 
 	EXPLOITS = {
 		'all': exploitall,
@@ -84,4 +70,37 @@ class Vulnpress():
 		'afd': exploitafd
 	}
 
-Vulnpress(args.hostname, args.category, args.username, args.password)
+
+class ExploitHandler(tornado.web.RequestHandler):
+	def get(self, *args, **kwargs):
+		self.render('exploit.html', results=None)
+
+	def post(self, *args, **kwargs):
+		category = self.get_argument('exploit_type', None)
+		hostname = self.get_argument('hostname', None)
+		results = None
+		if category is not None:
+			vp = Vulnpress(hostname)
+			results = vp.exploit(category)
+
+		self.write(results)
+
+
+class Init(tornado.web.Application):
+	def __init__(self):
+		handlers = [
+			(r"/", ExploitHandler)
+		]
+		settings = {
+			'debug': True,
+			'template_path': 'web/templates',
+			'static_path': "web"
+		}
+		tornado.web.Application.__init__(self, handlers, **settings)
+
+
+if __name__ == "__main__":
+	init = Init()
+
+	init.listen(8888, address='localhost')
+	tornado.ioloop.IOLoop.current().start()

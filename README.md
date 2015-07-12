@@ -1,16 +1,12 @@
 ┌∩┐(◣_◢)┌∩┐
 
-Requirements:
-
 -Python 3.4
-
--pip install colorama
 
 -pip install beautifulsoup4
 
-Usage: python vulnpress.py hostname category
+-pip install tornado
 
-Categories: all, sql, shell, xss
+Usage: python vulnpress.py
 
-Optional arguments: --username --password
+
     
