@@ -6,6 +6,8 @@
 
 -pip install tornado
 
+-pip install sqlalchemy
+
 Usage: python vulnpress.py
 
 
