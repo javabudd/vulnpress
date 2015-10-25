@@ -1,72 +1,65 @@
 import tornado.ioloop
 import tornado.web
 from exploits.exploit import Exploit
-from exploits.exploitsql import ExploitSql
-from exploits.exploitshell import ExploitShell
-from exploits.exploitxss import ExploitXSS
-from exploits.exploitescalation import ExploitEscalation
-from exploits.exploitafd import ExploitAfd
-from exploits.sql import *
-from exploits.shell import *
-from exploits.xss import *
-from exploits.escalation import *
-from exploits.afd import *
-from sqlalchemy import inspect
 
 
 class Vulnpress:
     def __init__(self, hostname, username=None, password=None):
-        self.hostname = hostname
-        self.formathostname()
-        self.isloggedin = self.login(username, password)
+        hostname = self.formathostname(hostname)
+        self.sploiter = Exploit(hostname, self.login(hostname, username, password))
 
     def exploit(self, category):
         self.EXPLOITS.get(category)(self)
+        exploitjson = Exploit.exploits
+        Exploit.exploits = {'found': {}, 'not_found': {}}
 
-        return Exploit.exploits
+        return exploitjson
 
-    def login(self, username, password):
+    def login(self, hostname, username, password):
         isloggedin = False
         if username is not None and password is not None:
-            isloggedin = Exploit().login(self.hostname, username, password)
+            isloggedin = self.sploiter.login(hostname, username, password)
             if isloggedin is False or isloggedin is None:
                 exit("\n"'Unable to login with those credentials')
         return isloggedin
 
-    def formathostname(self):
-        if self.hostname[:8] == 'https://':
-            # ssl not supported yet
-            return False
-        if self.hostname[:7] != "http://":
-            self.hostname = 'http://' + self.hostname
-
     def exploitall(self):
-        self.exploitsql()
-        self.exploitshell()
-        self.exploitescalation()
-        self.exploitxss()
-        self.exploitafd()
+        self.sploiter.exploit()
 
     def exploitsql(self):
-        [cls(self.hostname, self.isloggedin).exploit() for cls in ExploitSql.__subclasses__()]
+        self.sploiter.exploit_type(4)
+
+        return self
 
     def exploitxss(self):
-        [cls(self.hostname, self.isloggedin).exploit() for cls in ExploitXSS.__subclasses__()]
+        self.sploiter.exploit_type(5)
 
-    def exploitescalation(self):
-        [cls(self.hostname, self.isloggedin).exploit() for cls in ExploitEscalation.__subclasses__()]
+        return self
 
     def exploitshell(self):
-        [cls(self.hostname, self.isloggedin).exploit() for cls in ExploitShell.__subclasses__()]
+        self.sploiter.exploit_type(3)
+
+        return self
 
     def exploitafd(self):
-        [cls(self.hostname, self.isloggedin).exploit() for cls in ExploitAfd.__subclasses__()]
+        self.sploiter.exploit_type(1)
+
+        return self
+
+    @staticmethod
+    def formathostname(hostname):
+        if hostname[:8] == 'https://':
+            # ssl not supported yet
+            pass
+        if hostname[:7] != "http://":
+            return 'http://' + hostname
+
+        return hostname
 
     EXPLOITS = {
         'all': exploitall,
         'sql': exploitsql,
         'xss': exploitxss,
-        'escalation': exploitescalation,
         'shell': exploitshell,
         'afd': exploitafd
     }
