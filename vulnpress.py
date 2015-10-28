@@ -1,5 +1,6 @@
 import tornado.ioloop
 import tornado.web
+from db.db import Db
 from exploit.exploit import Exploit
 
 
@@ -34,9 +35,25 @@ class Vulnpress:
     }
 
 
+class MainHandler(tornado.web.RequestHandler):
+    def get(self, *args, **kwargs):
+        self.render('main.html')
+
+    def post(self, *args, **kwargs):
+        category = self.get_argument('exploit_type', None)
+        results = None
+        if category is not None:
+            vp = Vulnpress(self.get_argument('hostname', None), self.get_argument('username', None),
+                           self.get_argument('password', None))
+            results = vp.exploit(category)
+
+        self.write(results)
+
+
 class ExploitHandler(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
-        self.render('exploit.html', results=None)
+        exploit = Db().get_exploit_by_id(self.get_argument('id'))
+        self.render('exploit.html', exploit=exploit, type=Db().get_exploit_type_by_id(exploit.type_id))
 
     def post(self, *args, **kwargs):
         category = self.get_argument('exploit_type', None)
@@ -52,7 +69,8 @@ class ExploitHandler(tornado.web.RequestHandler):
 class Init(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/", ExploitHandler)
+            (r"/", MainHandler),
+            (r"/exploit", ExploitHandler)
         ]
         settings = {
             'debug': True,

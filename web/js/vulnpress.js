@@ -1,11 +1,9 @@
 $(document).ready(function() {
     $('#exploit-form').on('submit', function(e) {
         e.preventDefault();
-        var found = $('.found'),
-            not_found = $('.not-found'),
+        var found = $('#exploits-found'),
             error = $('#error');
-        found.empty();
-        not_found.empty();
+        found.addClass('hidden');
         error.empty().addClass('hidden');
         $.ajax({
             url: '/',
@@ -14,13 +12,11 @@ $(document).ready(function() {
             data: $(this).serialize(),
             success: function(response) {
                 if (response.error) {
-                    $('#error').html(response.error).removeClass('hidden');
+                    error.html(response.error).removeClass('hidden');
                 } else {
+                    found.removeClass('hidden');
                     $.each(response.found, function(exploit_id, exploit) {
-                         found.append('<li><a target="_blank" href="' + exploit.exploiturl + '">' + exploit.name + '</a></li>');
-                    });
-                    $.each(response.not_found, function(exploit_id, exploit) {
-                         not_found.append('<li><a target="_blank" href="' + exploit.exploiturl + '">' + exploit.name + '</a></li>');
+                         found.append('<p><a target="_blank" href="/exploit?id=' + exploit_id + '">' + exploit.name + '</a></p>');
                     });
                 }
             }
