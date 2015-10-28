@@ -2,21 +2,27 @@ $(document).ready(function() {
     $('#exploit-form').on('submit', function(e) {
         e.preventDefault();
         var found = $('.found'),
-            not_found = $('.not-found');
+            not_found = $('.not-found'),
+            error = $('#error');
         found.empty();
         not_found.empty();
+        error.empty().addClass('hidden');
         $.ajax({
             url: '/',
             dataType: 'json',
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-                $.each(response.found, function(exploit_id, exploit) {
-                     found.append('<li><a target="_blank" href="' + exploit.exploiturl + '">' + exploit.name + '</a></li>');
-                });
-                $.each(response.not_found, function(exploit_id, exploit) {
-                     not_found.append('<li><a target="_blank" href="' + exploit.exploiturl + '">' + exploit.name + '</a></li>');
-                });
+                if (response.error) {
+                    $('#error').html(response.error).removeClass('hidden');
+                } else {
+                    $.each(response.found, function(exploit_id, exploit) {
+                         found.append('<li><a target="_blank" href="' + exploit.exploiturl + '">' + exploit.name + '</a></li>');
+                    });
+                    $.each(response.not_found, function(exploit_id, exploit) {
+                         not_found.append('<li><a target="_blank" href="' + exploit.exploiturl + '">' + exploit.name + '</a></li>');
+                    });
+                }
             }
         });
     });

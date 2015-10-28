@@ -1,60 +1,29 @@
 import tornado.ioloop
 import tornado.web
-from exploits.exploit import Exploit
+from exploit.exploit import Exploit
 
 
 class Vulnpress:
     def __init__(self, hostname, username=None, password=None):
-        hostname = self.formathostname(hostname)
-        self.sploiter = Exploit(hostname, self.login(hostname, username, password))
+        self.exploiter = Exploit(hostname, username, password)
 
     def exploit(self, category):
-        self.EXPLOITS.get(category)(self)
-        exploitjson = Exploit.exploits
-        Exploit.exploits = {'found': {}, 'not_found': {}}
-
-        return exploitjson
-
-    def login(self, hostname, username, password):
-        isloggedin = False
-        if username is not None and password is not None:
-            isloggedin = self.sploiter.login(hostname, username, password)
-            if isloggedin is False or isloggedin is None:
-                exit("\n"'Unable to login with those credentials')
-        return isloggedin
+        return self.EXPLOITS.get(category)(self)
 
     def exploitall(self):
-        self.sploiter.exploit()
+        return self.exploiter.exploit()
 
     def exploitsql(self):
-        self.sploiter.exploit_type(4)
-
-        return self
+        return self.exploiter.exploit(4)
 
     def exploitxss(self):
-        self.sploiter.exploit_type(5)
-
-        return self
+        return self.exploiter.exploit(5)
 
     def exploitshell(self):
-        self.sploiter.exploit_type(3)
-
-        return self
+        return self.exploiter.exploit(3)
 
     def exploitafd(self):
-        self.sploiter.exploit_type(1)
-
-        return self
-
-    @staticmethod
-    def formathostname(hostname):
-        if hostname[:8] == 'https://':
-            # ssl not supported yet
-            pass
-        if hostname[:7] != "http://":
-            return 'http://' + hostname
-
-        return hostname
+        return self.exploiter.exploit(1)
 
     EXPLOITS = {
         'all': exploitall,
@@ -71,10 +40,10 @@ class ExploitHandler(tornado.web.RequestHandler):
 
     def post(self, *args, **kwargs):
         category = self.get_argument('exploit_type', None)
-        hostname = self.get_argument('hostname', None)
         results = None
         if category is not None:
-            vp = Vulnpress(hostname)
+            vp = Vulnpress(self.get_argument('hostname', None), self.get_argument('username', None),
+                           self.get_argument('password', None))
             results = vp.exploit(category)
 
         self.write(results)

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, ForeignKey, Text, Boolean
 from db.exploit import Exploit
-from db.exploittype import ExploitType
+from db.exploit_type import ExploitType
 import json
 
 
