@@ -5,34 +5,18 @@ from exploit.exploit import Exploit
 
 
 class Vulnpress:
-    def __init__(self, hostname, username=None, password=None):
-        self.exploiter = Exploit(hostname, username, password)
+    def __init__(self, hostname, protocol, username=None, password=None):
+        self.exploiter = Exploit(hostname, protocol, username, password)
+        self.exploits = {
+            'all': self.exploiter.exploit(),
+            'sql': self.exploiter.exploit(4),
+            'xss': self.exploiter.exploit(5),
+            'shell': self.exploiter.exploit(3),
+            'afd': self.exploiter.exploit(1)
+        }
 
     def exploit(self, category):
-        return self.EXPLOITS.get(category)(self)
-
-    def exploitall(self):
-        return self.exploiter.exploit()
-
-    def exploitsql(self):
-        return self.exploiter.exploit(4)
-
-    def exploitxss(self):
-        return self.exploiter.exploit(5)
-
-    def exploitshell(self):
-        return self.exploiter.exploit(3)
-
-    def exploitafd(self):
-        return self.exploiter.exploit(1)
-
-    EXPLOITS = {
-        'all': exploitall,
-        'sql': exploitsql,
-        'xss': exploitxss,
-        'shell': exploitshell,
-        'afd': exploitafd
-    }
+        return self.exploits.get(category)
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -43,27 +27,30 @@ class MainHandler(tornado.web.RequestHandler):
         category = self.get_argument('exploit_type', None)
         results = None
         if category is not None:
-            vp = Vulnpress(self.get_argument('hostname', None), self.get_argument('username', None),
+            vp = Vulnpress(self.format_hostname(self.get_argument('hostname', None)),
+                           self.get_argument('protocol', 'http://'), self.get_argument('username', None),
                            self.get_argument('password', None))
             results = vp.exploit(category)
 
         self.write(results)
+
+    @staticmethod
+    def format_hostname(hostname):
+        if hostname[:7] == "http://":
+            hostname = hostname[7:]
+        elif hostname[:8] == "https://":
+            hostname = hostname[8:]
+
+        if hostname[:4] == "www.":
+            hostname = hostname[4:]
+
+        return hostname.strip()
 
 
 class ExploitHandler(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
         exploit = Db().get_exploit_by_id(self.get_argument('id'))
         self.render('exploit.html', exploit=exploit, type=Db().get_exploit_type_by_id(exploit.type_id))
-
-    def post(self, *args, **kwargs):
-        category = self.get_argument('exploit_type', None)
-        results = None
-        if category is not None:
-            vp = Vulnpress(self.get_argument('hostname', None), self.get_argument('username', None),
-                           self.get_argument('password', None))
-            results = vp.exploit(category)
-
-        self.write(results)
 
 
 class Init(tornado.web.Application):
