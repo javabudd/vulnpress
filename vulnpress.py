@@ -53,11 +53,18 @@ class ExploitHandler(tornado.web.RequestHandler):
         self.render('exploit.html', exploit=exploit, type=Db().get_exploit_type_by_id(exploit.type_id))
 
 
+class ExploitsHandler(tornado.web.RequestHandler):
+    def get(self, *args, **kwargs):
+        exploits = Db().get_exploits()
+        self.render('exploits.html', exploits=exploits)
+
+
 class Init(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
-            (r"/exploit", ExploitHandler)
+            (r"/exploit", ExploitHandler),
+            (r"/exploits", ExploitsHandler)
         ]
         settings = {
             'debug': True,

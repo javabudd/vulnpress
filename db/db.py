@@ -21,7 +21,7 @@ class Db:
 
     # Get all exploits
     def get_exploits(self):
-        return self.get_session().query(Exploit).all()
+        return self.get_session().query(Exploit).order_by(Exploit.name).all()
 
     # Get all exploit types
     def get_exploit_types(self):

@@ -1,55 +1,53 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="col-xs-12">
-    <form id="exploit-form" action="/" method="post">
-        <div class="form-group row">
-             <div class="col-md-2">
-                <label for="hostname">Protocol</label>
-                <select name="protocol" class="form-control">
-                    <option value="http://" selected="selected">HTTP</option>
-                    <option value="https://">HTTPS</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label for="hostname">Hostname</label>
-                <input id="hostname" required=required class="form-control required" type="text"
-                       name="hostname">
-            </div>
-            <div class="col-md-2">
-                <label for="username">Username</label>
-                <input id="username" placeholder="optional" class="form-control" type="text" name="username">
-            </div>
-            <div class="col-md-2">
-                <label for="password">Password</label>
-                <input id="password" placeholder="optional" class="form-control" type="text" name="password">
-            </div>
-            <div class="col-md-4">
-                <label for="exploit-type">Exploit Type</label>
-                <select id="exploit-type" name="exploit_type" class="form-control">
-                    <option value="all">All</option>
-                    <option value="afd">Arbitrary File Download</option>
-                    <option value="xss">Cross Site Scripting</option>
-                    <option value="escalation">Escalation</option>
-                    <option value="shell">Shell</option>
-                    <option value="sql">SQL</option>
-                </select>
-            </div>
+<form id="exploit-form" action="/" method="post">
+    <div class="form-group row">
+         <div class="col-md-2">
+            <label for="hostname">Protocol</label>
+            <select name="protocol" class="form-control">
+                <option value="http://" selected="selected">HTTP</option>
+                <option value="https://">HTTPS</option>
+            </select>
         </div>
-        <div class="form-group row">
-            <div class="col-md-12">
-                <label for="submit">&nbsp</label>
-                <input id="submit" type="submit" name="submit" value="GO AHEAD, MAKE MY DAY" class="btn btn-success form-control">
-            </div>
+        <div class="col-md-2">
+            <label for="hostname">Hostname</label>
+            <input id="hostname" required=required class="form-control required" type="text"
+                   name="hostname">
         </div>
-    </form>
-    <hr>
-    <div class="hidden" id="none-found">
-        <h5>No exploits found.</h5>
+        <div class="col-md-2">
+            <label for="username">Username</label>
+            <input id="username" placeholder="optional" class="form-control" type="text" name="username">
+        </div>
+        <div class="col-md-2">
+            <label for="password">Password</label>
+            <input id="password" placeholder="optional" class="form-control" type="text" name="password">
+        </div>
+        <div class="col-md-4">
+            <label for="exploit-type">Exploit Type</label>
+            <select id="exploit-type" name="exploit_type" class="form-control">
+                <option value="all">All</option>
+                <option value="afd">Arbitrary File Download</option>
+                <option value="xss">Cross Site Scripting</option>
+                <option value="escalation">Escalation</option>
+                <option value="shell">Shell</option>
+                <option value="sql">SQL</option>
+            </select>
+        </div>
     </div>
-    <div class="hidden" id="error"></div>
-    <div class="hidden" id="exploits-found">
-        <h5>Exploits found!</h5>
+    <div class="form-group row">
+        <div class="col-md-12">
+            <label for="submit">&nbsp</label>
+            <input id="submit" type="submit" name="submit" value="GO AHEAD, MAKE MY DAY" class="btn btn-success form-control">
+        </div>
     </div>
-    <div class="modal"></div>
+</form>
+<hr>
+<div class="hidden" id="none-found">
+    <h5>No exploits found.</h5>
 </div>
+<div class="hidden" id="error"></div>
+<div class="hidden" id="exploits-found">
+    <h5>Exploits found!</h5>
+</div>
+<div class="modal"></div>
 {% end %}
