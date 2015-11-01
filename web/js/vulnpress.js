@@ -17,9 +17,9 @@ $(document).ready(function() {
                 if (response.error) {
                     error.html(response.error).removeClass('hidden');
                 } else {
-                    if (response.found.length) {
+                    if (response.length) {
                         found.removeClass('hidden');
-                        $.each(response.found, function(exploit_id, exploit) {
+                        $.each(response, function(exploit_id, exploit) {
                              found.append('<p><a target="_blank" href="/exploit?id=' + exploit_id + '">' + exploit.name + '</a></p>');
                         });
                     } else {

@@ -28,8 +28,12 @@ class Db:
         return self.get_session().query(ExploitType).all()
 
     # Get exploits by exploit type
-    def get_exploits_by_exploit_type(self, exploit_type: int):
-        return self.get_session().query(Exploit).filter(Exploit.type_id == exploit_type).all()
+    def get_exploits_by_exploit_type_id(self, exploit_type_id: int):
+        return self.get_session().query(Exploit).join(ExploitType).filter(ExploitType.id == exploit_type_id).all()
+
+    # Get exploits by exploit type short name
+    def get_exploits_by_exploit_type_short_name(self, short_name: str):
+        return self.get_session().query(Exploit).join(ExploitType).filter(ExploitType.short_name == short_name).all()
 
     # Get a single exploit by an ID
     def get_exploit_by_id(self, exploit_id: int):
@@ -60,7 +64,8 @@ class Db:
 
         Table('exploit_type', metadata,
               Column('id', Integer, primary_key=True, nullable=False, autoincrement=True),
-              Column('name', String(128), nullable=False)
+              Column('name', String(128), nullable=False),
+              Column('short_name', String(32), nullable=False)
               )
         Table('exploit', metadata,
               Column('id', Integer, primary_key=True, nullable=False, autoincrement=True),

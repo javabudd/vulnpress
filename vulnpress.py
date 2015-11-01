@@ -7,16 +7,6 @@ from exploit.exploit import Exploit
 class Vulnpress:
     def __init__(self, hostname, protocol, username=None, password=None):
         self.exploiter = Exploit(hostname, protocol, username, password)
-        self.exploits = {
-            'all': self.exploiter.exploit(),
-            'sql': self.exploiter.exploit(4),
-            'xss': self.exploiter.exploit(5),
-            'shell': self.exploiter.exploit(3),
-            'afd': self.exploiter.exploit(1)
-        }
-
-    def exploit(self, category):
-        return self.exploits.get(category)
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -24,13 +14,16 @@ class MainHandler(tornado.web.RequestHandler):
         self.render('main.html')
 
     def post(self, *args, **kwargs):
-        category = self.get_argument('exploit_type', None)
+        exploit_type = self.get_argument('exploit_type')
         results = None
-        if category is not None:
+        if exploit_type is not None:
             vp = Vulnpress(self.format_hostname(self.get_argument('hostname', None)),
                            self.get_argument('protocol', 'http://'), self.get_argument('username', None),
                            self.get_argument('password', None))
-            results = vp.exploit(category)
+            if exploit_type == 'all':
+                results = vp.exploiter.exploit()
+            else:
+                results = vp.exploiter.exploit(exploit_type)
 
         self.write(results)
 
