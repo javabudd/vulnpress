@@ -14,18 +14,19 @@ $(document).ready(function() {
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-                if (response.error) {
-                    error.html(response.error).removeClass('hidden');
-                } else {
-                    if (response.length) {
+                if (!$.isEmptyObject(response)) {
+                    if (response.error) {
+                        error.html(response.error).removeClass('hidden');
+                    }
+                    else {
                         found.removeClass('hidden');
                         $.each(response, function(exploit_id, exploit) {
                              found.append('<p><a target="_blank" href="/exploit?id=' + exploit_id + '">' + exploit.name + '</a></p>');
                         });
-                    } else {
-                        none_found.removeClass('hidden');
                     }
-
+                }
+                else {
+                    none_found.removeClass('hidden');
                 }
             }
         });
