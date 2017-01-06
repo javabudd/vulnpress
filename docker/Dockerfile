@@ -22,10 +22,10 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.
 RUN rm -rf /etc/nginx/nginx.conf /etc/php-fpm.d/www.conf
 
 COPY entrypoint.sh /
-COPY wp-config.php /
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY wordpress.lan.conf /etc/nginx/conf.d/wordpress.lan.conf
-COPY php-fpm.www.conf /etc/php-fpm.d/php-fpm.www.conf
+COPY wordpress/wp-config.php /
+COPY nginx/conf/nginx.conf /etc/nginx/
+COPY nginx/conf.d/* /etc/nginx/conf.d/
+COPY php-fpm.d/php-fpm.www.conf /etc/php-fpm.d/php-fpm.www.conf
 
 RUN chmod +x /entrypoint.sh
 
