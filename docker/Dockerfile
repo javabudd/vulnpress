@@ -3,7 +3,6 @@ FROM centos:7
 ENV container webserver
 
 RUN groupadd -r mysql && useradd -r -g mysql mysql && \
-    chmod +x /disable-ipv6.sh /fix-slow-dns.sh && \
     rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-latest.noarch.rpm && \
     rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB && \
     rpm -ivh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm && \
