@@ -2,9 +2,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, ForeignKey, Text, Boolean
 from db.exploit import Exploit
 from db.exploit_type import ExploitType
-from db.random_quote import RandomQuote
 import json
-import random
+
 
 class Db:
     # Create a single exploit
@@ -52,10 +51,6 @@ class Db:
     def get_exploit_type_by_name(self, exploit_type: str):
         return self.get_session().query(ExploitType).filter(ExploitType.name == exploit_type).one()
 
-    # Get a random quote
-    def get_random_quote(self):
-        return random.choice(self.get_session().query(RandomQuote).all()).quote
-
     # Delete an exploit type
     def delete_exploit_type(self, type_id: int):
         session = self.get_session()
@@ -67,10 +62,6 @@ class Db:
     def create_base_tables(self):
         metadata = MetaData(bind=self.create_engine())
 
-        Table('random_quote', metadata,
-              Column('id', Integer, primary_key=True, nullable=False, autoincrement=True),
-              Column('quote', Text, nullable=False)
-              )
         Table('exploit_type', metadata,
               Column('id', Integer, primary_key=True, nullable=False, autoincrement=True),
               Column('name', String(128), nullable=False),

@@ -11,7 +11,7 @@ class Vulnpress:
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
-        self.render('main.html', quote=Db().get_random_quote())
+        self.render('main.html')
 
     def post(self, *args, **kwargs):
         exploit_type = self.get_argument('exploit_type')
