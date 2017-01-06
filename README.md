@@ -2,24 +2,29 @@
 
 # Dependencies
 
--Python 3.4
+- [Python >= 3.4](https://www.python.org/downloads)
 
--pip install beautifulsoup4
+- [Beautiful Soup 4](https://www.crummy.com/software/BeautifulSoup/bs4/doc) `pip install beautifulsoup4`
 
--pip install tornado
+- [Tornado](http://www.tornadoweb.org/en/stable) `pip install tornado`
 
--pip install sqlalchemy
+- [SQLAlchemy](http://www.sqlalchemy.org) `pip install sqlalchemy`
 
 # Usage
 ```
 python vulnpress.py
 ```
 
-# Docker
+# [Vagrant](https://www.vagrantup.com/docs/cli)
 ```
-docker build -t vulnpress/webserver .
+vagrant up
+vagrant reload
+vagrant halt
+vagrant provision
 ```
 
+# [Docker](https://www.docker.com)
 ```
+docker build -t vulnpress/webserver .
 docker run -p 80:80 -p 3306:3306 -d vulnpress/webserver
 ```
