@@ -2,17 +2,9 @@ FROM centos:7
 
 ENV container webserver
 
-RUN rm -rf /etc/yum/pluginconf.d/fastestmirror.conf
-
-COPY yum/plugins/fastestmirror.conf /etc/yum/pluginconf.d/
-COPY scripts/disable-ipv6.sh /disable-ipv6.sh
-COPY scripts/fix-slow-dns.sh /fix-slow-dns.sh
-
 RUN groupadd -r mysql && useradd -r -g mysql mysql && \
     chmod +x /disable-ipv6.sh /fix-slow-dns.sh && \
-    sh /disable-ipv6.sh && \
-    sh /fix-slow-dns.sh && \
-    rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm && \
+    rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-latest.noarch.rpm && \
     rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB && \
     rpm -ivh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm && \
     yum clean all && \
@@ -39,7 +31,7 @@ COPY my.cnf.d /etc/my.cnf.d
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY wordpress.lan.conf /etc/nginx/conf.d/wordpress.lan.conf
 COPY php-fpm.www.conf /etc/php-fpm.d/php-fpm.www.conf
-COPY scripts/entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod 644 \
         /etc/my.cnf \
