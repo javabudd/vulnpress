@@ -3,7 +3,7 @@ FROM centos:7
 ENV container webserver
 
 RUN groupadd -r mysql && useradd -r -g mysql mysql && \
-    rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-latest.noarch.rpm && \
+    rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB && \
     rpm -ivh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm && \
     yum clean all && \
