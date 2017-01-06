@@ -1,6 +1,17 @@
 {
   "contus-video-gallery": {
-    "version": "2.7",
-    "zip": "https://www.exploit-db.com/apps/0b842a602d03edbbd77bb679e17317ed-contus-video-gallery.2.7.zip"
+    "2.7": {
+      "zip": "https://www.exploit-db.com/apps/0b842a602d03edbbd77bb679e17317ed-contus-video-gallery.2.7.zip"
+    }
+  },
+  "cp-multi-view-event-calendar": {
+    "1.01" : {
+      "zip": "https://www.exploit-db.com/apps/2c6debacb93e25d7a99c211efc484dfb-cp-multi-view-calendar.zip"
+    }
+  },
+  "google-document-embedder": {
+    "2.5.14": {
+      "zip": "https://www.exploit-db.com/apps/296bf22cdce4b9d54b12bf8bf06eeb2e-google-document-embedder.2.5.14.zip"
+    }
   }
 }
