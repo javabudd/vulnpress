@@ -13,6 +13,7 @@
 # Usage
 ```
 python vulnpress.py
+http://127.0.0.1:8888
 ```
 
 # [Vagrant](https://www.vagrantup.com/docs/cli)
@@ -25,6 +26,6 @@ vagrant provision
 
 # [Docker](https://www.docker.com)
 ```
-docker build -t vulnpress/webserver .
+docker build -t vulnpress/webserver docker/
 docker run -p 80:80 -p 3306:3306 -d vulnpress/webserver
 ```
