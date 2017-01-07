@@ -24,7 +24,8 @@ Vagrant.configure(2) do |config|
     d.build_image "/vagrant/docker", args: "-t 'vulnpress/webserver'"
     d.run "vulnpress/webserver",
       args: "--restart no -e 'TERM=vt100' \
-        -v '/vagrant/web:/var/www/vulnpress' \
+        -v '/var/lib/mysql:/var/lib/mysql' \
+        -v '/vagrant/docker/wordpress:/var/www/wordpress' \
         -h 'vulnpress.dev' -p 80:80 -p 3306:3306"
   end
 end

@@ -1,0 +1,6 @@
+*
+!.gitignore
+!install_plugins.php
+!plugins.json
+!wp-config.php
+!wp-content

@@ -22,7 +22,7 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.
 RUN rm -rf /etc/nginx/nginx.conf /etc/php-fpm.d/www.conf
 
 COPY entrypoint.sh /
-COPY wordpress/wp-config.php /
+COPY wordpress/* /opt/wordpress/
 COPY nginx/conf/nginx.conf /etc/nginx/
 COPY nginx/conf.d/* /etc/nginx/conf.d/
 COPY php-fpm.d/php-fpm.www.conf /etc/php-fpm.d/php-fpm.www.conf
@@ -32,5 +32,9 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 80 3306
+
+VOLUME /var/lib/mysql
+
+VOLUME /vagrant/docker/wordpress
 
 CMD ["nginx", "-g", "daemon off;"]
