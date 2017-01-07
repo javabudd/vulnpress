@@ -2,9 +2,9 @@
 set -eo pipefail
 
 # Wordpress
-if [ ! -d "/var/www/wordpress" ]; then
-  wget https://wordpress.org/latest.tar.gz && tar xzvf latest.tar.gz -C /var/www/ && rm latest.tar.gz
-  cp -f /wp-config.php /var/www/wordpress/
+if [ ! -a "/var/www/wordpress/index.php" ]; then
+  wget https://wordpress.org/latest.tar.gz && tar xzvf latest.tar.gz --keep-old-files -C /var/www/ && rm latest.tar.gz
+  php /var/www/wordpress/install_plugins.php
 fi
 
 # MariaDB
