@@ -13,5 +13,10 @@
     "4.5.4": {
       "zip": "https://www.exploit-db.com/apps/ff6323af43d01e7e474a66af56d9bb39-quiz-master-next.4.5.4.zip"
     }
+  },
+  "creative-contact-form": {
+    "0.9.7": {
+      "zip": "https://downloads.wordpress.org/plugin/sexy-contact-form.0.9.7.zip"
+    }
   }
 }

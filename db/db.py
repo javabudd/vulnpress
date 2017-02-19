@@ -1,8 +1,10 @@
+import json
+
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, ForeignKey, Text, Boolean
+
 from db.exploit import Exploit
 from db.exploit_type import ExploitType
-import json
 
 
 class Db:

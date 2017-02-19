@@ -2,7 +2,7 @@
 set -eo pipefail
 
 # Wordpress
-if [ ! -a "/var/www/wordpress/index.php" ]; then
+if [ ! -e "/var/www/wordpress/index.php" ]; then
   wget https://wordpress.org/latest.tar.gz && tar xzvf latest.tar.gz --keep-old-files -C /var/www/ && rm latest.tar.gz
   php /var/www/wordpress/install_plugins.php
 fi
