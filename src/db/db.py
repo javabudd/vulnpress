@@ -3,8 +3,8 @@ import json
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, ForeignKey, Text, Boolean
 
-from db.exploit import Exploit
-from db.exploit_type import ExploitType
+from src.db.exploit import Exploit
+from src.db.exploit_type import ExploitType
 
 
 class Db:
@@ -96,4 +96,4 @@ class Db:
     @staticmethod
     # Create the default engine
     def create_engine():
-        return create_engine('sqlite:///db/exploits.db', echo=False)
+        return create_engine('sqlite:///src/db/exploits.db', echo=False)

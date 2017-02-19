@@ -23,5 +23,15 @@
     "2.3.8": {
       "zip": "https://downloads.wordpress.org/plugin/gigpress.2.3.8.zip"
     }
+  },
+  "league-manager": {
+    "3.9.11": {
+      "zip": "https://downloads.wordpress.org/plugin/leaguemanager.3.9.1.1.zip"
+    }
+  },
+  "nextend-facebook-connect": {
+    "1.4.59": {
+      "zip": "https://downloads.wordpress.org/plugin/nextend-facebook-connect.1.4.59.zip"
+    }
   }
 }
