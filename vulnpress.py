@@ -1,8 +1,8 @@
 import tornado.ioloop
 import tornado.web
 
-from db.db import Db
-from exploit.exploit import Exploit
+from src.db.db import Db
+from src.exploit.exploit import Exploit
 
 
 class Vulnpress:
