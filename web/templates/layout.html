@@ -9,29 +9,29 @@
     <link rel="stylesheet" href="{{ static_url('css/bootswatch.min.css') }}">
 </head>
 <body>
-    <div class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand">Vulnpress</a>
-                <span class="navbar-brand">|</span>
-                <a href="/exploits" class="navbar-brand">
-                    Exploits
-                </a>
-            </div>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Vulnpress</a>
+            <span class="navbar-brand">|</span>
+            <a href="/exploits" class="navbar-brand">
+                Exploits
+            </a>
         </div>
     </div>
-    <div class="container exploit-body">
-        {% block body %}{% end %}
-    </div>
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js"></script>
-    <script src="//cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js"></script>
-    <script src="{{ static_url('js/vulnpress.js') }}"></script>
-    <!--[if lt IE 9]>
-    <script src="{{ static_url('js/html5shiv.min.js') }}"></script>
-    <script src="{{ static_url('js/respond.min.js') }}"></script>
-    <![endif]-->
+</div>
+<div class="container exploit-body">
+    {% block body %}{% end %}
+</div>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js"></script>
+<script src="//cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js"></script>
+<script src="{{ static_url('js/vulnpress.js') }}"></script>
+<!--[if lt IE 9]>
+<script src="{{ static_url('js/html5shiv.min.js') }}"></script>
+<script src="{{ static_url('js/respond.min.js') }}"></script>
+<![endif]-->
 </body>
 </html>
