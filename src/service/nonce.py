@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from exploits.exploit import AbstractExploit
 
 
 class Nonce(object):
@@ -6,11 +7,11 @@ class Nonce(object):
         self.connection = connection
         self.hostname = hostname
 
-    def get_nonce(self, exploit, headers):
+    def get_nonce(self, exploit: AbstractExploit, headers):
         nonce = None
-        if exploit.nonce_url:
+        if exploit.get_nonce_url():
             response = self.connection.request(
-                hostname=self.hostname + exploit.nonce_url,
+                hostname=self.hostname + exploit.get_nonce_url(),
                 data='',
                 headers=headers
             )

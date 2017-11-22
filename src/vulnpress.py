@@ -1,13 +1,35 @@
 import tornado.ioloop
 import tornado.web
 
-from src.db.db import Db
-from src.exploit.exploit import Exploit
+from db.db import Db
+import exploits
+from request.connection import Connection
 
 
 class Vulnpress:
     def __init__(self, hostname, protocol, username=None, password=None):
-        self.exploiter = Exploit(hostname, protocol, username, password)
+        self.connection = Connection()
+        self.hostname = protocol + hostname
+        self.username = username
+        self.password = password
+        self.is_logged_in = False
+        self.exploit_results = {}
+        self.connection.reset_session()
+
+    def exploit(self, exploit_type: str):
+        if self.connection.verify_socket(self.hostname) is False:
+            results = {"error": "Could not connect to host."}
+        elif self.username and self.password is not None \
+                and not self.__login(self.hostname, self.username, self.password):
+            results = {"error": "Unable to login with the credentials provided."}
+        else:
+            if short_name is not None:
+                pass
+            else:
+                exploits.run()
+            results = exploits.__get_exploit_results()
+
+        return results
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -22,14 +44,14 @@ class MainHandler(tornado.web.RequestHandler):
                            self.get_argument('protocol', 'http://'), self.get_argument('username', None),
                            self.get_argument('password', None))
             if exploit_type == 'all':
-                results = vp.exploiter.exploit()
+                results = vp.exploit()
             else:
-                results = vp.exploiter.exploit(exploit_type)
+                results = vp.exploit(exploit_type)
 
         self.write(results)
 
     @staticmethod
-    def format_hostname(hostname):
+    def format_hostname(hostname: str):
         if hostname[:7] == "http://":
             hostname = hostname[7:]
         elif hostname[:8] == "https://":
@@ -62,12 +84,20 @@ class Init(tornado.web.Application):
         ]
         settings = {
             'debug': True,
-            'template_path': 'web/templates',
-            'static_path': "web"
+            'template_path': '../web/templates',
+            'static_path': "../web"
         }
         tornado.web.Application.__init__(self, handlers, **settings)
 
 
 if __name__ == "__main__":
-    Init().listen(8888, address='localhost')
-    tornado.ioloop.IOLoop.current().start()
+    vp = Vulnpress('javabudd.com',
+                   'http://',
+                   None,
+                   None
+                   )
+
+    results = vp.exploiter.exploit()
+
+    # Init().listen(8888, address='localhost')
+    # tornado.ioloop.IOLoop.current().start()
